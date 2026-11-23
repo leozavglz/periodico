@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.core import mail
 from django.conf import settings
+import re
 
 
 class PruebasUsuarioPersonalizado(TestCase):
@@ -137,3 +138,13 @@ class PruebasContrasena(TestCase):
         self.assertEqual(correo.subject, "Recupera tu contraseña del Periódico")
         self.assertIn("Hola, ana:", correo.body)
         self.assertEqual(correo.from_email, settings.DEFAULT_FROM_EMAIL)
+
+    def test_enlace_de_reinicio_abre_formulario(self):
+        self.client.post(reverse("password_reset"), {"email": "ana@ejemplo.mx"})
+        enlace = re.search(r"https?://\S+", mail.outbox[0].body).group(0)
+        respuesta = self.client.get(enlace, follow=True)
+        self.assertContains(respuesta, "Escribe tu nueva contraseña")
+
+    def test_enlace_falso(self):
+        respuesta = self.client.get("/cuentas/reset/NQ/enlace-falso/")
+        self.assertContains(respuesta, "Enlace no válido")

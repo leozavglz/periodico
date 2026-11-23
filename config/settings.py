@@ -174,6 +174,9 @@ DEFAULT_FROM_EMAIL = env.str(
     "DEFAULT_FROM_EMAIL", default="Periódico <no-responder@localhost>"
 )
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
+PASSWORD_RESET_TIMEOUT = 3600  # 1 hora, en segundos
+ADMIN_EMAIL = env.str("ADMIN_EMAIL", default="")
+ADMINS = [("Leo", ADMIN_EMAIL)] if ADMIN_EMAIL else []
 
 # HTTPS
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")  # nuevo

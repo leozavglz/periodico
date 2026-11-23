@@ -161,7 +161,19 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"  # nuevo
 CRISPY_TEMPLATE_PACK = "bootstrap5"  # nuevo
 
 # Correo
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = env.str(
+    "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
+)
+EMAIL_HOST = env.str("EMAIL_HOST", default="")
+EMAIL_PORT = env.int("EMAIL_PORT", default=465)
+EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=True)
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD", default="")
+EMAIL_TIMEOUT = 10
+DEFAULT_FROM_EMAIL = env.str(
+    "DEFAULT_FROM_EMAIL", default="Periódico <no-responder@localhost>"
+)
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # HTTPS
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")  # nuevo

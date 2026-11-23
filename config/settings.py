@@ -160,6 +160,9 @@ LOGOUT_REDIRECT_URL = "inicio"  # nuevo
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"  # nuevo
 CRISPY_TEMPLATE_PACK = "bootstrap5"  # nuevo
 
+# Correo
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 # HTTPS
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")  # nuevo
 SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=False)  # nuevo

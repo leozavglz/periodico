@@ -79,3 +79,8 @@ class PruebasRegistro(TestCase):
         self.assertEqual(respuesta.status_code, 200)
         self.assertIn("password2", respuesta.context["form"].errors)
         self.assertEqual(get_user_model().objects.count(), 0)
+        
+    def test_registro_con_bootstrap(self):
+        respuesta = self.client.get(reverse("registro"))
+        self.assertContains(respuesta, "bootstrap.min.css")
+        self.assertContains(respuesta, "form-control")

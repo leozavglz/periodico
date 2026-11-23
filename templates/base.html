@@ -30,6 +30,10 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li>
+                  <a class="dropdown-item" href="{% url 'password_change' %}">Cambiar contraseña</a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
                   <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="dropdown-item">Cerrar sesión</button>

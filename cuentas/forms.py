@@ -7,10 +7,10 @@ from .models import UsuarioPersonalizado
 class FormularioCreacionUsuario(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = UsuarioPersonalizado
-        fields = ("username", "email", "edad")
+        fields = ("username", "email", "edad", "ciudad")
 
 
 class FormularioCambioUsuario(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = UsuarioPersonalizado
-        fields = ("username", "email", "edad")
+        fields = ("username", "email", "edad", "ciudad")

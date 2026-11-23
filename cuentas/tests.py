@@ -30,3 +30,9 @@ class PruebasUsuarioPersonalizado(TestCase):
         self.assertTrue(admin.is_active)
         self.assertTrue(admin.is_staff)
         self.assertTrue(admin.is_superuser)
+
+    def test_crear_usuario_sin_edad(self):
+        usuario = get_user_model().objects.create_user(
+            username="sinedad", password="Clave-segura-2026"
+        )
+        self.assertIsNone(usuario.edad)

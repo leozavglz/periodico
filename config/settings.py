@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "cuentas",  # nuevo
     "paginas",  # nuevo
+    "crispy_forms",  # nuevo
+    "crispy_bootstrap5",  # nuevo
 ]
 
 MIDDLEWARE = [
@@ -153,6 +155,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "login"  # nuevo
 LOGIN_REDIRECT_URL = "inicio"  # nuevo
 LOGOUT_REDIRECT_URL = "inicio"  # nuevo
+
+# Formularios con Bootstrap
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"  # nuevo
+CRISPY_TEMPLATE_PACK = "bootstrap5"  # nuevo
 
 # HTTPS
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")  # nuevo

@@ -6,7 +6,7 @@
 {% block contenido %}
   <h1>Periódico</h1>
   {% if user.is_authenticated %}
-    <p>Hola, {{ user.username }}.</p>
+    <p>Hola, {{ user.username }}{% if user.edad is not None %} ({{ user.edad }} año{{ user.edad|pluralize }}){% endif %}.</p>
     <form action="{% url 'logout' %}" method="post">
       {% csrf_token %}
       <button type="submit">Cerrar sesión</button>

@@ -7,7 +7,11 @@
   <div class="p-5 mb-4 bg-body-tertiary rounded-3">
     <h1 class="display-5 fw-bold">Periódico</h1>
     {% if user.is_authenticated %}
-      <p class="fs-4">Hola, {{ user.username }}. Qué bueno verte de nuevo.</p>
+      {% if user.edad is not None %}
+        <p class="fs-4">Hola, {{ user.username }} ({{ user.edad }} año{{ user.edad|pluralize }}). Qué bueno verte de nuevo.</p>
+      {% else %}
+        <p class="fs-4">Hola, {{ user.username }}. Qué bueno verte de nuevo.</p>
+      {% endif %}
     {% else %}
       <p class="fs-4">Noticias escritas por nuestra comunidad.</p>
       <a class="btn btn-primary btn-lg me-2" href="{% url 'registro' %}">Crear una cuenta</a>

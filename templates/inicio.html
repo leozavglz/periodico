@@ -11,7 +11,8 @@
     {% else %}
       <p class="fs-4">Noticias escritas por nuestra comunidad.</p>
       <a class="btn btn-primary btn-lg me-2" href="{% url 'registro' %}">Crear una cuenta</a>
-      <a class="btn btn-outline-secondary btn-lg" href="{% url 'login' %}">Iniciar sesión</a>
+      <a class="btn btn-outline-secondary btn-lg me-2" href="{% url 'login' %}">Iniciar sesión</a>
     {% endif %}
+    <a class="btn btn-outline-primary btn-lg" href="{% url 'articulo_lista' %}">Leer los artículos</a>
   </div>
 {% endblock contenido %}

@@ -12,7 +12,7 @@
     <p>{{ articulo.cuerpo|linebreaksbr }}</p>
   </article>
 
-  {% if user == articulo.autor %}
+  {% if user == articulo.autor or user.is_staff %}
     <div class="mb-4">
       <a class="btn btn-outline-primary" href="{% url 'articulo_editar' articulo.pk %}">Editar</a>
       <a class="btn btn-outline-danger" href="{% url 'articulo_eliminar' articulo.pk %}">Eliminar</a>

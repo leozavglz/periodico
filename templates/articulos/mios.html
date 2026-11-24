@@ -1,0 +1,22 @@
+<!-- templates/articulos/mios.html -->
+{% extends "base.html" %}
+
+{% block titulo %}Mis artículos{% endblock titulo %}
+
+{% block contenido %}
+  <h1 class="mb-4">Mis artículos</h1>
+  {% for articulo in object_list %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h2 class="h4 card-title">
+          <a href="{{ articulo.get_absolute_url }}">{{ articulo.titulo }}</a>
+        </h2>
+        <p class="text-body-secondary">{{ articulo.fecha|date:"j \d\e F \d\e Y"|lower }}</p>
+       <p class="card-text">{{ articulo.cuerpo|truncatewords:30 }}</p>
+      </div>
+    </div>
+  {% empty %}
+    <p>Todavía no has escrito ningún artículo.</p>
+    <a class="btn btn-primary" href="{% url 'articulo_nuevo' %}">Escribir un artículo</a>
+  {% endfor %}
+{% endblock contenido %}

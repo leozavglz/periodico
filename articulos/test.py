@@ -83,3 +83,36 @@ class PruebasArticulos(TestCase):
         )
         self.assertRedirects(respuesta, reverse("articulo_lista"))
         self.assertFalse(Articulo.objects.filter(pk=self.articulo.pk).exists())
+
+    def test_staff_puede_editar_articulo_ajeno(self):
+        staff = get_user_model().objects.create_user(
+            username="editor",
+            email="editor@ejemplo.mx",
+            password="Clave-segura-2026",
+            is_staff=True,
+        )
+        self.client.force_login(staff)
+        respuesta = self.client.post(
+            reverse("articulo_editar", args=[self.articulo.pk]),
+            {"titulo": "Editado por staff", "cuerpo": "Texto del artículo."},
+        )
+        self.assertRedirects(respuesta, self.articulo.get_absolute_url())
+        self.articulo.refresh_from_db()
+        self.assertEqual(self.articulo.titulo, "Editado por staff")
+
+    def test_mis_articulos_requiere_sesion(self):
+        respuesta = self.client.get(reverse("articulo_mios"))
+        self.assertRedirects(
+            respuesta, f"{reverse('login')}?next={reverse('articulo_mios')}"
+        )
+
+    def test_mis_articulos_solo_muestra_los_propios(self):
+        Articulo.objects.create(
+            titulo="Artículo de otro", cuerpo="Texto.", autor=self.otro
+        )
+        self.client.force_login(self.autora)
+        respuesta = self.client.get(reverse("articulo_mios"))
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertTemplateUsed(respuesta, "articulos/mios.html")
+        self.assertContains(respuesta, "Un buen título")
+        self.assertNotContains(respuesta, "Artículo de otro")

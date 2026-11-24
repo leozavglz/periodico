@@ -38,7 +38,8 @@ class VistaEditarArticulo(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = "articulos/editar.html"
 
     def test_func(self):
-        return self.get_object().autor == self.request.user
+        articulo = self.get_object()
+        return articulo.autor == self.request.user or self.request.user.is_staff
 
 
 class VistaEliminarArticulo(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -47,4 +48,13 @@ class VistaEliminarArticulo(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
     success_url = reverse_lazy("articulo_lista")
 
     def test_func(self):
-        return self.get_object().autor == self.request.user
+        articulo = self.get_object()
+        return articulo.autor == self.request.user or self.request.user.is_staff
+
+
+class VistaMisArticulos(LoginRequiredMixin, ListView):
+    model = Articulo
+    template_name = "articulos/mios.html"
+
+    def get_queryset(self):
+        return Articulo.objects.filter(autor=self.request.user)

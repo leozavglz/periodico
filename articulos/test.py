@@ -117,6 +117,7 @@ class PruebasArticulos(TestCase):
         self.assertContains(respuesta, "Un buen título")
         self.assertNotContains(respuesta, "Artículo de otro")
 
+
 class PruebasComentarios(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -134,6 +135,7 @@ class PruebasComentarios(TestCase):
             articulo=cls.articulo, comentario="Muy interesante.", autor=cls.lector
         )
         cls.url_comentar = reverse("articulo_comentar", args=[cls.articulo.pk])
+        cls.url_eliminar = reverse("comentario_eliminar", args=[cls.comentario.pk])
 
     def test_modelo(self):
         self.assertEqual(str(self.comentario), "Muy interesante.")
@@ -147,15 +149,15 @@ class PruebasComentarios(TestCase):
 
     def test_comentar_requiere_sesion(self):
         respuesta = self.client.post(self.url_comentar, {"comentario": "Hola."})
-        self.assertRedirects(
-            respuesta, f"{reverse('login')}?next={self.url_comentar}"
-        )
+        self.assertRedirects(respuesta, f"{reverse('login')}?next={self.url_comentar}")
         self.assertEqual(Comentario.objects.count(), 1)
 
     def test_comentar(self):
         self.client.force_login(self.autora)
         respuesta = self.client.post(self.url_comentar, {"comentario": "¡Gracias!"})
-        self.assertRedirects(respuesta, self.articulo.get_absolute_url())
+        self.assertRedirects(
+            respuesta, f"{self.articulo.get_absolute_url()}#comentarios"
+        )
         nuevo = Comentario.objects.get(comentario="¡Gracias!")
         self.assertEqual(nuevo.autor, self.autora)
         self.assertEqual(nuevo.articulo, self.articulo)
@@ -171,3 +173,40 @@ class PruebasComentarios(TestCase):
         self.client.force_login(self.autora)
         respuesta = self.client.get(self.url_comentar)
         self.assertEqual(respuesta.status_code, 405)
+
+    def test_autor_del_comentario_puede_eliminarlo(self):
+        self.client.force_login(self.lector)
+        respuesta = self.client.post(self.url_eliminar)
+        self.assertRedirects(respuesta, self.articulo.get_absolute_url())
+        self.assertEqual(Comentario.objects.count(), 0)
+
+    def test_otro_usuario_no_puede_eliminar_comentario(self):
+        self.client.force_login(self.autora)
+        respuesta = self.client.post(self.url_eliminar)
+        self.assertEqual(respuesta.status_code, 403)
+        self.assertEqual(Comentario.objects.count(), 1)
+
+    def test_staff_no_puede_eliminar_comentario_ajeno(self):
+        staff = get_user_model().objects.create_user(
+            username="editor",
+            email="editor@ejemplo.mx",
+            password="Clave-segura-2026",
+            is_staff=True,
+        )
+        self.client.force_login(staff)
+        respuesta = self.client.post(self.url_eliminar)
+        self.assertEqual(respuesta.status_code, 403)
+        self.assertEqual(Comentario.objects.count(), 1)
+
+    def test_eliminar_comentario_requiere_sesion(self):
+        respuesta = self.client.post(self.url_eliminar)
+        self.assertRedirects(respuesta, f"{reverse('login')}?next={self.url_eliminar}")
+        self.assertEqual(Comentario.objects.count(), 1)
+
+    def test_enlace_eliminar_solo_para_el_autor_del_comentario(self):
+        self.client.force_login(self.lector)
+        respuesta = self.client.get(self.articulo.get_absolute_url())
+        self.assertContains(respuesta, self.url_eliminar)
+        self.client.force_login(self.autora)
+        respuesta = self.client.get(self.articulo.get_absolute_url())
+        self.assertNotContains(respuesta, self.url_eliminar)

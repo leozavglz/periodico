@@ -20,13 +20,20 @@
     </div>
   {% endif %}
 
-  <section class="mb-4">
+  <section class="mb-4" id="comentarios">
     <h2 class="h5">Comentarios ({{ articulo.comentarios.count }})</h2>
     {% for comentario in articulo.comentarios.all %}
       <div class="border-start border-3 ps-3 mb-3">
         <p class="mb-1">{{ comentario.comentario }}</p>
         <p class="small text-body-secondary mb-0">
-          {{ comentario.autor.username }} · {{ comentario.fecha|date:"j \d\e F, H:i"|lower }}
+          {{ comentario.autor.username }}
+          {% if comentario.autor == articulo.autor %}
+            <span class="badge text-bg-primary">Autor</span>
+          {% endif %}
+          · {{ comentario.fecha|date:"j \d\e F, H:i"|lower }}
+          {% if comentario.autor == user %}
+            · <a class="link-danger" href="{% url 'comentario_eliminar' comentario.pk %}">Eliminar</a>
+          {% endif %}
         </p>
       </div>
     {% empty %}

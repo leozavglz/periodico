@@ -7,6 +7,7 @@ from .views import (
     VistaDetalleArticulo,
     VistaEditarArticulo,
     VistaEliminarArticulo,
+    VistaEliminarComentario,
     VistaListaArticulos,
     VistaMisArticulos,
 )
@@ -21,4 +22,9 @@ urlpatterns = [
         "<int:pk>/eliminar/", VistaEliminarArticulo.as_view(), name="articulo_eliminar"
     ),
     path("<int:pk>/comentar/", VistaComentar.as_view(), name="articulo_comentar"),
+    path(
+        "comentarios/<int:pk>/eliminar/",
+        VistaEliminarComentario.as_view(),
+        name="comentario_eliminar",
+    ),
 ]

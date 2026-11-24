@@ -1,0 +1,17 @@
+<!-- templates/articulos/comentario_eliminar.html -->
+{% extends "base.html" %}
+
+{% block titulo %}Eliminar comentario{% endblock titulo %}
+
+{% block contenido %}
+  <h1 class="h3 mb-3">Eliminar comentario</h1>
+  <p>¿Seguro que quieres eliminar este comentario?</p>
+  <blockquote class="border-start border-3 ps-3 mb-4">
+    {{ comentario.comentario }}
+  </blockquote>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+    <a class="btn btn-outline-secondary" href="{{ comentario.articulo.get_absolute_url }}">Cancelar</a>
+  </form>
+{% endblock contenido %}

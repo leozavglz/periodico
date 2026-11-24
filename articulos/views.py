@@ -1,5 +1,6 @@
 # articulos/views.py
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -9,7 +10,8 @@ from django.views.generic import (
     UpdateView,
 )
 
-from .models import Articulo
+from .forms import FormularioComentario
+from .models import Articulo, Comentario
 
 
 class VistaListaArticulos(ListView):
@@ -20,6 +22,11 @@ class VistaListaArticulos(ListView):
 class VistaDetalleArticulo(DetailView):
     model = Articulo
     template_name = "articulos/detalle.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = FormularioComentario()
+        return context
 
 
 class VistaCrearArticulo(LoginRequiredMixin, CreateView):
@@ -58,3 +65,24 @@ class VistaMisArticulos(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Articulo.objects.filter(autor=self.request.user)
+
+
+class VistaComentar(LoginRequiredMixin, CreateView):
+    model = Comentario
+    form_class = FormularioComentario
+    template_name = "articulos/detalle.html"
+    http_method_names = ["post"]
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.articulo = get_object_or_404(Articulo, pk=kwargs["pk"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["articulo"] = self.articulo
+        return context
+
+    def form_valid(self, form):
+        form.instance.articulo = self.articulo
+        form.instance.autor = self.request.user
+        return super().form_valid(form)
